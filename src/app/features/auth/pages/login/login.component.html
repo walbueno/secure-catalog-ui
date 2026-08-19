@@ -1,0 +1,20 @@
+<div class="login">
+  <h1>secure-catalog-ui</h1>
+  <p>
+    Demo sem backend real — escolha um perfil para simular o login e ver a
+    autorização por perfil (<code>RoleGuard</code>) em ação.
+  </p>
+
+  <button
+    type="button"
+    *ngFor="let demoUser of demoUsers"
+    (click)="loginAs(demoUser.role)"
+  >
+    {{ demoUser.label }}
+  </button>
+
+  <p class="hint">
+    "Vendedor" é bloqueado propositalmente na rota /products — é o
+    <code>RoleGuard</code> funcionando.
+  </p>
+</div>

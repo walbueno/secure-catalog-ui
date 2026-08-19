@@ -1,0 +1,58 @@
+<div class="product-list">
+  <header class="toolbar">
+    <h1>Produtos</h1>
+    <input
+      type="search"
+      [formControl]="searchControl"
+      placeholder="Buscar por nome ou SKU..."
+      aria-label="Buscar produtos"
+    />
+    <button type="button" (click)="openCreateForm()">Novo produto</button>
+  </header>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+  <p *ngIf="loading">Carregando...</p>
+
+  <table *ngIf="!loading" class="grid">
+    <thead>
+      <tr>
+        <th (click)="sortBy('name')">Nome</th>
+        <th (click)="sortBy('sku')">SKU</th>
+        <th>Categoria</th>
+        <th (click)="sortBy('price')">Preço</th>
+        <th (click)="sortBy('stockQuantity')">Estoque</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of sortedAndPaginatedProducts">
+        <td>{{ product.name }}</td>
+        <td>{{ product.sku }}</td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.price | currency : 'BRL' }}</td>
+        <td>{{ product.stockQuantity }}</td>
+        <td>{{ product.active ? 'Ativo' : 'Inativo' }}</td>
+        <td>
+          <button type="button" (click)="openEditForm(product)">Editar</button>
+        </td>
+      </tr>
+      <tr *ngIf="products.length === 0">
+        <td colspan="7">Nenhum produto encontrado.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <footer class="pagination" *ngIf="!loading">
+    <button type="button" (click)="goToPage(page - 1)" [disabled]="page === 1">Anterior</button>
+    <span>Página {{ page }} de {{ totalPages }}</span>
+    <button type="button" (click)="goToPage(page + 1)" [disabled]="page === totalPages">Próxima</button>
+  </footer>
+
+  <app-product-form
+    *ngIf="isFormOpen"
+    [product]="editingProduct"
+    (save)="onFormSave($event)"
+    (cancel)="onFormCancel()"
+  ></app-product-form>
+</div>

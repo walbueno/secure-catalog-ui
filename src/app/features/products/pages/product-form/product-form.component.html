@@ -1,0 +1,53 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="product-form" novalidate>
+  <h2>{{ product ? 'Editar produto' : 'Novo produto' }}</h2>
+
+  <div class="field">
+    <label for="name">Nome</label>
+    <input id="name" type="text" formControlName="name" />
+    <small class="error" *ngIf="f['name'].touched && f['name'].invalid">
+      Nome é obrigatório (mínimo 2 caracteres).
+    </small>
+  </div>
+
+  <div class="field">
+    <label for="sku">SKU</label>
+    <input id="sku" type="text" formControlName="sku" placeholder="ANL-0001" />
+    <small class="error" *ngIf="f['sku'].touched && f['sku'].invalid">
+      SKU deve ter entre 4 e 20 caracteres (letras maiúsculas, números e hífen).
+    </small>
+  </div>
+
+  <div class="field">
+    <label for="category">Categoria</label>
+    <select id="category" formControlName="category">
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="price">Preço (R$)</label>
+    <input id="price" type="number" step="0.01" formControlName="price" />
+    <small class="error" *ngIf="f['price'].touched && f['price'].invalid">
+      Informe um preço válido maior que zero.
+    </small>
+  </div>
+
+  <div class="field">
+    <label for="stockQuantity">Quantidade em estoque</label>
+    <input id="stockQuantity" type="number" formControlName="stockQuantity" />
+  </div>
+
+  <div class="field checkbox">
+    <label>
+      <input type="checkbox" formControlName="active" />
+      Produto ativo
+    </label>
+  </div>
+
+  <div class="actions">
+    <button type="button" (click)="onCancel()" [disabled]="saving">Cancelar</button>
+    <button type="submit" [disabled]="saving">
+      {{ saving ? 'Salvando...' : 'Salvar' }}
+    </button>
+  </div>
+</form>
