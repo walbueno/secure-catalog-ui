@@ -1,11 +1,9 @@
 # Secure Catalog UI
 
-Catálogo de produtos em Angular com foco em arquitetura modular e
-consumo seguro de API — construído como peça de portfólio para
-demonstrar padrões usados em aplicações Angular de nível sênior
-(lazy loading, formulários reativos, grid com busca/ordenação/paginação,
-autenticação centralizada via interceptor). Não é um CRUD genérico —
-cada decisão de arquitetura está documentada na tabela abaixo.
+Desenvolvi este catálogo de produtos em Angular para ir além de um CRUD básico e demonstrar boas práticas de mercado. 
+O projeto foi estruturado com foco em arquitetura modular, priorizando performance (com lazy loading), 
+segurança no consumo de APIs (via interceptor de autenticação) e uma experiência de usuário fluida (formulários reativos e grid completa com busca, ordenação e paginação). 
+Cada decisão técnica e arquitetural está detalhada na tabela abaixo.
 
 ## Stack
 Angular 15 · TypeScript · RxJS · Reactive Forms · SCSS
@@ -46,20 +44,19 @@ src/app/
 
 ## Rodando localmente
 
+Para rodar o projeto na sua máquina, siga os passos abaixo:
+
 ```bash
 npm install
-npm start        # http://localhost:4200
-npm run build    # build de produção
-npm test         # testes unitários (Karma/Jasmine)
+npm start        # Sobe o servidor em http://localhost:4200
+npm run build    # Gera o build de produção
+npm test         # Roda os testes unitários (Karma/Jasmine)
 ```
 
-> A API é apontada em `src/environments/environment.ts` (`apiUrl`) — os
-> serviços estão prontos para consumir um backend real; não há mock
-> embutido de propósito, para deixar claro o contrato HTTP esperado.
+**Configuração da API**: O endereço do backend deve ser configurado em `src/environments/environment.ts` (`apiUrl`). 
+O projeto foi estruturado para consumir uma API real e não utiliza mocks embutidos, evidenciando claramente o contrato HTTP esperado.
+
 
 ## Próximos passos
 
-- Trocar a grid client-side por paginação server-side quando o volume
-  de dados justificar (hoje a ordenação/paginação acontece sobre a
-  lista completa retornada pela API — decisão consciente para manter
-  o escopo do projeto enxuto)
+**Paginação no servidor**: Atualmente, a busca, ordenação e paginação acontecem no client-side sobre a lista completa trazida pela API. Essa foi uma escolha proposital para manter o escopo enxuto, mas o próximo passo natural é migrar para paginação server-side caso o volume de dados cresça.
