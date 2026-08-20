@@ -32,7 +32,7 @@ describe('LoginComponent', () => {
     expect(roles).toEqual(['admin', 'stock-manager', 'sales']);
   });
 
-  it('logs in with the chosen role and navigates to /products', () => {
+  it('logs in with an authorized role and navigates to /products', () => {
     spyOn(authService, 'login').and.callThrough();
 
     component.loginAs('admin');
@@ -42,5 +42,18 @@ describe('LoginComponent', () => {
       'demo-token'
     );
     expect(router.navigate).toHaveBeenCalledWith(['/products']);
+  });
+
+  it('keeps a sales user on the login screen and explains the restriction', () => {
+    spyOn(authService, 'login').and.callThrough();
+
+    component.loginAs('sales');
+
+    expect(authService.login).toHaveBeenCalledWith(
+      jasmine.objectContaining({ roles: ['sales'] }),
+      'demo-token'
+    );
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(component.accessMessage).toBe('O perfil Vendedor não possui acesso ao catálogo de produtos.');
   });
 });

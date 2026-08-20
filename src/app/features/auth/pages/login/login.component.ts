@@ -22,10 +22,19 @@ export class LoginComponent {
     { label: 'Entrar como Vendedor (sem acesso ao catálogo)', role: 'sales' },
   ];
 
+  accessMessage = '';
+
   constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
   loginAs(role: UserRole): void {
     this.authService.login({ id: 'demo-user', name: 'Usuário Demo', roles: [role] }, 'demo-token');
-    this.router.navigate(['/products']);
+
+    if (role === 'admin' || role === 'stock-manager') {
+      this.accessMessage = '';
+      this.router.navigate(['/products']);
+      return;
+    }
+
+    this.accessMessage = 'O perfil Vendedor não possui acesso ao catálogo de produtos.';
   }
 }

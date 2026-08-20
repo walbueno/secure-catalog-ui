@@ -9,7 +9,7 @@ export interface AuthenticatedUser {
 
 export type UserRole = 'admin' | 'sales' | 'stock-manager' | 'viewer';
 
-const TOKEN_STORAGE_KEY = 'capta_demo_token';
+const TOKEN_STORAGE_KEY = 'catalog_demo_token';
 
 /**
  * Owns authentication state as a single source of truth (BehaviorSubject),

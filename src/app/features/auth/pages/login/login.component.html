@@ -13,6 +13,10 @@
     {{ demoUser.label }}
   </button>
 
+  <p class="access-message" *ngIf="accessMessage" role="alert">
+    {{ accessMessage }}
+  </p>
+
   <p class="hint">
     "Vendedor" é bloqueado propositalmente na rota /products — é o
     <code>RoleGuard</code> funcionando.
