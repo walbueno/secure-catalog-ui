@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 import { AuthService, UserRole } from '../services/auth.service';
 
 /**
@@ -13,7 +13,7 @@ import { AuthService, UserRole } from '../services/auth.service';
  *   { path: 'products', canActivate: [RoleGuard], data: { roles: ['admin', 'stock-manager'] }, ... }
  */
 @Injectable({ providedIn: 'root' })
-export class RoleGuard implements CanActivate {
+export class RoleGuard  {
   constructor(private readonly authService: AuthService, private readonly router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean | UrlTree {
