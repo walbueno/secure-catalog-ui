@@ -1,11 +1,12 @@
 /// <reference types="jasmine" />
 
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { ProductService } from './product.service';
 import { environment } from '../../../environments/environment';
 import { Product } from '../models/product.model';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ProductService', () => {
   let service: ProductService;
@@ -24,8 +25,9 @@ describe('ProductService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-    });
+    imports: [],
+    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
     service = TestBed.inject(ProductService);
     httpMock = TestBed.inject(HttpTestingController);
   });
