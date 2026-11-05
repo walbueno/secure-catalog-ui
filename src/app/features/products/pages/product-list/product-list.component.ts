@@ -17,9 +17,10 @@ type SortDirection = 'asc' | 'desc';
  * Swapping this for ag-Grid/PrimeNG later would only touch the template.
  */
 @Component({
-  selector: 'app-product-list',
-  templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss'],
+    selector: 'app-product-list',
+    templateUrl: './product-list.component.html',
+    styleUrls: ['./product-list.component.scss'],
+    standalone: false
 })
 export class ProductListComponent implements OnInit, OnDestroy {
   products: Product[] = [];

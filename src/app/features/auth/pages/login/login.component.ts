@@ -11,9 +11,10 @@ import { AuthService, UserRole } from '../../../../core/services/auth.service';
  * end-to-end instead of just reading about it in the code.
  */
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    standalone: false
 })
 export class LoginComponent {
   readonly demoUsers: Array<{ label: string; role: UserRole }> = [

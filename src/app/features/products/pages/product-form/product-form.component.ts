@@ -15,9 +15,10 @@ import { Product, ProductCategory, ProductFormValue } from '../../../../core/mod
  * the form's internals can change without breaking callers).
  */
 @Component({
-  selector: 'app-product-form',
-  templateUrl: './product-form.component.html',
-  styleUrls: ['./product-form.component.scss'],
+    selector: 'app-product-form',
+    templateUrl: './product-form.component.html',
+    styleUrls: ['./product-form.component.scss'],
+    standalone: false
 })
 export class ProductFormComponent implements OnChanges {
   @Input() product: Product | null = null;
