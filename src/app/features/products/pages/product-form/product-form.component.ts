@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Product, ProductCategory, ProductFormValue } from '../../../../core/models/product.model';
 
 /**
@@ -18,7 +18,7 @@ import { Product, ProductCategory, ProductFormValue } from '../../../../core/mod
     selector: 'app-product-form',
     templateUrl: './product-form.component.html',
     styleUrls: ['./product-form.component.scss'],
-    standalone: false
+    imports: [ReactiveFormsModule]
 })
 export class ProductFormComponent implements OnChanges {
   @Input() product: Product | null = null;

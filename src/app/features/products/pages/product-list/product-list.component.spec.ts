@@ -26,10 +26,9 @@ describe('ProductListComponent', () => {
     productServiceSpy.list.and.returnValue(of([]));
 
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [ProductListComponent],
-      providers: [{ provide: ProductService, useValue: productServiceSpy }],
-    });
+    imports: [ReactiveFormsModule, ProductListComponent],
+    providers: [{ provide: ProductService, useValue: productServiceSpy }],
+});
 
     fixture = TestBed.createComponent(ProductListComponent);
     component = fixture.componentInstance;

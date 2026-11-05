@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { Product, ProductFormValue } from '../../../../core/models/product.model';
 import { ProductService } from '../../../../core/services/product.service';
+import { ProductFormComponent } from '../product-form/product-form.component';
+import { CurrencyPipe } from '@angular/common';
 
 type SortKey = keyof Pick<Product, 'name' | 'sku' | 'price' | 'stockQuantity'>;
 type SortDirection = 'asc' | 'desc';
@@ -20,7 +22,7 @@ type SortDirection = 'asc' | 'desc';
     selector: 'app-product-list',
     templateUrl: './product-list.component.html',
     styleUrls: ['./product-list.component.scss'],
-    standalone: false
+    imports: [ReactiveFormsModule, ProductFormComponent, CurrencyPipe]
 })
 export class ProductListComponent implements OnInit, OnDestroy {
   products: Product[] = [];

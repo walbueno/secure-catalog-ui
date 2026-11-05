@@ -1,29 +1,23 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
+import { inject } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { AuthService, UserRole } from '../services/auth.service';
 
 /**
- * Route-level authorization: blocks navigation for users who lack the
- * role(s) declared on the route's `data.roles`. This is the navigation
- * counterpart to AuthInterceptor — the interceptor protects API calls,
- * this guard protects the UI surface itself, so an unauthorized user
- * never even reaches a screen whose data they couldn't fetch anyway.
+ * Autorização no nível da rota: bloqueia a navegação de quem não tem
+ * nenhum dos perfis declarados em `data.roles`. O interceptor protege as
+ * chamadas de API; o guard protege a navegação.
  *
- * Usage in a routing module:
- *   { path: 'products', canActivate: [RoleGuard], data: { roles: ['admin', 'stock-manager'] }, ... }
+ * Uso: { path: 'products', canActivate: [roleGuard], data: { roles: ['admin', 'stock-manager'] } }
  */
-@Injectable({ providedIn: 'root' })
-export class RoleGuard  {
-  constructor(private readonly authService: AuthService, private readonly router: Router) {}
+export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  canActivate(route: ActivatedRouteSnapshot): boolean | UrlTree {
-    const requiredRoles = (route.data['roles'] as UserRole[] | undefined) ?? [];
-
-    if (requiredRoles.length === 0) {
-      return true;
-    }
-
-    const isAuthorized = requiredRoles.some((role) => this.authService.hasRole(role));
-    return isAuthorized ? true : this.router.createUrlTree(['/login']);
+  const requiredRoles = (route.data['roles'] as UserRole[] | undefined) ?? [];
+  if (requiredRoles.length === 0) {
+    return true;
   }
-}
+
+  const isAuthorized = requiredRoles.some((role) => authService.hasRole(role));
+  return isAuthorized ? true : router.createUrlTree(['/login']);
+};

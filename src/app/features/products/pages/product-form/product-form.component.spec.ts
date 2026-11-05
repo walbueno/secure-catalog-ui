@@ -20,9 +20,8 @@ describe('ProductFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [ProductFormComponent],
-    }).compileComponents();
+    imports: [ReactiveFormsModule, ProductFormComponent],
+}).compileComponents();
 
     fixture = TestBed.createComponent(ProductFormComponent);
     component = fixture.componentInstance;

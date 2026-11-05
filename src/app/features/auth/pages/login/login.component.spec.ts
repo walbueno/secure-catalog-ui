@@ -12,9 +12,9 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     localStorage.clear(); // avoid leaking a token from another spec's login() call
     await TestBed.configureTestingModule({
-      declarations: [LoginComponent],
-      providers: [AuthService, { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } }],
-    }).compileComponents();
+    imports: [LoginComponent],
+    providers: [AuthService, { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } }],
+}).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
