@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Usar o mesmo npm do desenvolvimento
+        run: npm install -g npm@11
+        
+      - run: npm ci
+
+      - name: Testes unitários
+        run: npx ng test --watch=false --browsers=ChromeHeadless
+
+      - name: Build de produção
+        run: npx ng build
+
+      - name: Auditoria de dependências
+        run: npm audit --omit=dev --audit-level=high
+        continue-on-error: true

@@ -1,233 +1,103 @@
 # Secure Catalog UI
 
-Aplicação de catálogo desenvolvida com **Angular e TypeScript**, explorando arquitetura modular, programação reativa com RxJS, formulários reativos, controle de acesso e testes automatizados.
+Catálogo de produtos em **Angular 21 e TypeScript**, construído para ir além de um CRUD básico: arquitetura modular com lazy loading, programação reativa com RxJS, controle de acesso por perfil e testes automatizados.
 
-> **Status:** Projeto demonstrativo focado em arquitetura e desenvolvimento Front-End.
+> **Status:** projeto demonstrativo, focado em arquitetura front-end. A autenticação é simulada (veja [Limitações](#limitações)).
 
----
+## Stack
 
-## 🎯 Objetivo
+Angular 21 · TypeScript · RxJS · Reactive Forms · SCSS · Karma/Jasmine
 
-O projeto foi desenvolvido para explorar uma aplicação Angular estruturada em módulos e responsabilidades bem definidas.
+## Funcionalidades
 
-Entre os principais conceitos trabalhados estão:
+- Login demonstrativo com perfis de acesso
+- Listagem de produtos com busca, ordenação e paginação
+- Criação e edição de produtos com validação
+- Rotas protegidas por perfil
 
-* arquitetura modular;
-* lazy loading;
-* RxJS;
-* Reactive Forms;
-* interceptors;
-* route guards;
-* controle de acesso;
-* testes automatizados.
+## Decisões de arquitetura e onde encontrá-las
 
----
+| Prática | Onde está | Como |
+| --- | --- | --- |
+| Lazy loading | `app-routing.module.ts` → `features/products` | `loadChildren` carrega o `ProductsModule` apenas ao acessar `/products`; no build, ele sai como chunk separado |
+| Programação reativa (RxJS) | `product-list.component.ts`, `auth.service.ts` | `debounceTime` + `distinctUntilChanged` + `switchMap` na busca (cancela a requisição anterior); `BehaviorSubject` como fonte única do usuário autenticado; `takeUntil` evita vazamento de subscriptions |
+| Formulários reativos | `product-form.component.ts` | `FormBuilder` + `Validators`; `patchValue` no modo de edição via `OnChanges` |
+| Consumo seguro de API | `core/interceptors/auth.interceptor.ts` | Injeta `Authorization: Bearer` em toda requisição e trata `401` em um só lugar; nenhum service precisa "lembrar" de autenticar |
+| Autorização por perfil | `core/services/auth.service.ts` | `UserRole` explícito (`admin`, `sales`, `stock-manager`, `viewer`) e `hasRole()`, em vez de um boolean genérico |
+| Proteção de rota | `core/guards/role.guard.ts` | `CanActivate` que bloqueia `/products` para perfis sem permissão; complementa o interceptor, que protege as chamadas de API |
+| Separação de responsabilidades | `core/` e `features/` | `core/` guarda o que é transversal (services, models, guards, interceptors); `features/` organiza por domínio de negócio |
+| Modelo de domínio isolado | `core/models` | `Product` não depende de Angular; tipos de leitura e escrita separados (`Product` vs `ProductFormValue`); `ProductService` fala só com a API |
 
-## 🛍️ Funcionalidades
-
-A aplicação contempla:
-
-* autenticação demonstrativa;
-* catálogo de produtos;
-* criação e edição de produtos;
-* busca;
-* ordenação;
-* paginação;
-* controle de acesso baseado em perfil.
-
----
-
-## 🏗️ Arquitetura
-
-A aplicação organiza responsabilidades entre camadas como:
+## Estrutura
 
 ```text
-core/
-features/
+src/app/
+├── core/
+│   ├── guards/         # RoleGuard
+│   ├── interceptors/   # AuthInterceptor
+│   ├── models/         # Product (domínio, sem dependência de Angular)
+│   └── services/       # AuthService, ProductService
+└── features/
+    ├── auth/           # login demonstrativo
+    └── products/       # módulo lazy-loaded
+        └── pages/
+            ├── product-list/
+            └── product-form/
 ```
 
-A estrutura utiliza conceitos de modularidade para separar responsabilidades compartilhadas e funcionalidades específicas.
+## Migração Angular 15 → 21
 
----
+O projeto nasceu no Angular 15 e foi migrado para o 21 na branch `chore/upgrade-angular`.
 
-## ⚡ Lazy Loading
+- Builder atualizado para `@angular/build`
+- Build (`npm run build`) e testes (`npm run test:ci`) passando após a migração
+- Migração sem quebras: o projeto manteve a arquitetura modular (NgModules); a conversão para standalone components fica como próximo passo
 
-A funcionalidade de produtos utiliza carregamento sob demanda através de `loadChildren`.
+## Autenticação e perfis
 
-Isso permite que determinadas partes da aplicação sejam carregadas conforme a necessidade de navegação.
+O login é demonstrativo: ao escolher um perfil, o `AuthService` salva o token fictício `demo-token` no `localStorage` e mantém o usuário em memória. O `AuthInterceptor` envia esse token nas requisições.
 
----
+- `admin` e `stock-manager`: acessam `/products`
+- `sales`: autentica, mas não tem acesso ao catálogo; a tela informa a restrição
+- `viewer`: suportado pelo modelo, sem botão no login demonstrativo
 
-## 🔄 RxJS
+## Testes
 
-O projeto utiliza RxJS para gerenciamento de fluxos assíncronos.
+Testes unitários com Karma/Jasmine para:
 
-Entre os operadores utilizados estão:
+- `ProductListComponent`: carregamento, erro, ordenação, paginação, busca com debounce e salvar
+- `LoginComponent`: perfis e navegação
+- `AuthInterceptor`: header de token e tratamento de `401`
+- `RoleGuard`: liberação e bloqueio por perfil
 
-* `debounceTime`
-* `distinctUntilChanged`
-* `switchMap`
-* `takeUntil`
-
-A combinação permite implementar, por exemplo, busca com debounce e cancelamento de requisições anteriores.
-
----
-
-## 📝 Reactive Forms
-
-Os formulários utilizam Angular Reactive Forms.
-
-São utilizados recursos como:
-
-* `FormBuilder`;
-* validators;
-* `patchValue`;
-* tratamento de alterações de componentes.
-
----
-
-## 🔐 Autenticação e autorização
-
-O projeto possui uma implementação **demonstrativa** de autenticação e autorização no Front-End.
-
-Os perfis utilizados incluem:
-
-* `admin`;
-* `sales`;
-* `stock-manager`;
-* `viewer`.
-
-O `RoleGuard` controla o acesso às rotas conforme o perfil do usuário.
-
-O `AuthInterceptor` adiciona um token de demonstração às requisições e trata respostas `401`.
-
----
-
-## ⚠️ Limitação importante
-
-A autenticação deste projeto **não possui backend de autenticação real**.
-
-O projeto utiliza um `demo-token` armazenado no `localStorage` para representar o cenário de autenticação.
-
-Portanto, o mecanismo deve ser entendido como uma demonstração de arquitetura Front-End e não como um sistema de autenticação seguro para produção.
-
-Em uma aplicação real, autenticação e autorização devem ser implementadas e validadas também no backend.
-
-> **Controle de acesso no Front-End não substitui autorização no servidor.**
-
----
-
-## 🧪 Testes
-
-O projeto possui testes para diferentes partes da aplicação, incluindo:
-
-* `ProductListComponent`;
-* `LoginComponent`;
-* `AuthInterceptor`;
-* `RoleGuard`.
-
-Os testes ajudam a verificar o comportamento de componentes e serviços isoladamente.
-
----
-
-## 🔎 Busca, ordenação e paginação
-
-A listagem de produtos implementa:
-
-* busca com debounce;
-* ordenação no cliente;
-* paginação no cliente.
-
-À medida que o volume de dados aumenta, uma evolução natural seria transferir essas operações para o servidor.
-
----
-
-## 🧠 Princípios utilizados
-
-O projeto busca aplicar conceitos relacionados a:
-
-* SOLID;
-* Clean Code;
-* separação de responsabilidades;
-* modularidade;
-* programação reativa;
-* reutilização de componentes;
-* testabilidade.
-
----
-
-## 📦 Stack
-
-* Angular 15
-* TypeScript
-* RxJS
-* Reactive Forms
-* SCSS
-* Karma/Jasmine
-
----
-
-## 🚀 Executando localmente
-
-Clone o projeto:
-
-```bash
-git clone https://github.com/walbueno/secure-catalog-ui.git
-```
-
-Instale as dependências:
+## Executando localmente
 
 ```bash
 npm install
+npm start          # http://localhost:4200
+npm run build      # build de produção
+npm test           # testes em modo watch
+npm run test:ci    # testes uma única vez (para pipelines)
 ```
 
-Execute:
+**API:** o endereço do backend é configurado em `src/environments/environment.ts` (`apiUrl`). O catálogo consome uma API HTTP real nesse endereço; o login demonstrativo é a única parte simulada.
 
-```bash
-ng serve
-```
+## Limitações
 
-A aplicação ficará disponível localmente conforme a configuração padrão do Angular CLI.
+- **Não há backend de autenticação.** O `demo-token` no `localStorage` serve apenas para demonstrar a arquitetura. Em produção, o token ficaria em cookie `HttpOnly`, já que o `localStorage` é exposto a XSS.
+- **Controle de acesso no front-end não substitui autorização no servidor.** O `RoleGuard` melhora a experiência; a segurança real precisa ser validada no backend.
+- **Ordenação e paginação são client-side** sobre a lista retornada pela API; apenas a busca é enviada ao servidor.
 
----
+## Próximos passos
 
-## 🔄 Possíveis evoluções
+- Paginação e ordenação no servidor
+- Autenticação e autorização reais via backend
+- Integração contínua com GitHub Actions (build e testes)
+- Testes E2E
+- Lint (`ng lint`)
 
-* autenticação real via backend;
-* autorização no servidor;
-* gerenciamento de sessão;
-* paginação server-side;
-* ordenação server-side;
-* persistência de dados;
-* testes E2E;
-* integração contínua;
-* observabilidade.
+## Autor
 
----
+**William Bueno** · Software Engineer · Web Applications
 
-## 💡 O que este projeto demonstra
-
-* Angular;
-* TypeScript;
-* RxJS;
-* arquitetura modular;
-* Reactive Forms;
-* programação reativa;
-* interceptors;
-* route guards;
-* controle de acesso no Front-End;
-* testes automatizados;
-* organização de aplicações web.
-
----
-
-## 👨‍💻 Autor
-
-**William Bueno**
-
-Software Engineer · Web Applications · Digital Products
-
-* [GitHub](https://github.com/walbueno)
-* [LinkedIn](https://www.linkedin.com/in/walbueno)
-* [Portfolio](https://williambueno.com.br)
-* [Beez Creative](https://beezcreative.com.br)
+[GitHub](https://github.com/walbueno) · [LinkedIn](https://www.linkedin.com/in/walbueno) · [Portfólio](https://williambueno.com.br) · [Beez Creative](https://beezcreative.com.br)

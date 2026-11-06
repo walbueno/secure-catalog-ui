@@ -13,7 +13,6 @@ import { ProductFormComponent } from './pages/product-form/product-form.componen
  * initial bundle doesn't pay the cost of this feature until it's needed.
  */
 @NgModule({
-  declarations: [ProductListComponent, ProductFormComponent],
-  imports: [CommonModule, ReactiveFormsModule, ProductsRoutingModule],
+    imports: [CommonModule, ReactiveFormsModule, ProductsRoutingModule, ProductListComponent, ProductFormComponent],
 })
 export class ProductsModule {}
