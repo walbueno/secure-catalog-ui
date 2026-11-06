@@ -16,6 +16,9 @@ jobs:
           node-version-file: '.nvmrc'
           cache: npm
 
+      - name: Usar o mesmo npm do desenvolvimento
+        run: npm install -g npm@11
+        
       - run: npm ci
 
       - name: Testes unitários

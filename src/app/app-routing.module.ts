@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RoleGuard } from './core/guards/role.guard';
+import { roleGuard } from './core/guards/role.guard';
 import { LoginComponent } from './features/auth/pages/login/login.component';
 
 const routes: Routes = [
@@ -14,7 +14,7 @@ const routes: Routes = [
   {
     path: 'products',
     loadChildren: () => import('./features/products/products.module').then((m) => m.ProductsModule),
-    canActivate: [RoleGuard],
+    canActivate: [roleGuard],
     data: { roles: ['admin', 'stock-manager'] },
   },
 ];
