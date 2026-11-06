@@ -5,17 +5,20 @@
     autorização por perfil (<code>RoleGuard</code>) em ação.
   </p>
 
-  <button
-    type="button"
-    *ngFor="let demoUser of demoUsers"
-    (click)="loginAs(demoUser.role)"
-  >
-    {{ demoUser.label }}
-  </button>
+  @for (demoUser of demoUsers; track demoUser) {
+    <button
+      type="button"
+      (click)="loginAs(demoUser.role)"
+      >
+      {{ demoUser.label }}
+    </button>
+  }
 
-  <p class="access-message" *ngIf="accessMessage" role="alert">
-    {{ accessMessage }}
-  </p>
+  @if (accessMessage) {
+    <p class="access-message" role="alert">
+      {{ accessMessage }}
+    </p>
+  }
 
   <p class="hint">
     "Vendedor" é bloqueado propositalmente na rota /products — é o

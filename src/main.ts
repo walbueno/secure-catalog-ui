@@ -1,7 +1,16 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { importProvidersFrom } from "@angular/core";
 
-import { AppModule } from './app/app.module';
+import { provideHttpClient, withInterceptors } from "@angular/common/http";
+import { authInterceptor } from "./app/core/interceptors/auth.interceptor";
+import { BrowserModule, bootstrapApplication } from "@angular/platform-browser";
+import { AppRoutingModule } from "./app/app-routing.module";
+import { AppComponent } from "./app/app.component";
 
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+bootstrapApplication(AppComponent, {
+    providers: [
+        importProvidersFrom(BrowserModule, AppRoutingModule),
+        provideHttpClient(withInterceptors([authInterceptor]))
+    ]
+})
   .catch(err => console.error(err));
